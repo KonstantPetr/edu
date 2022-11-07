@@ -216,7 +216,10 @@ def player_turn(settings, field, counter, rating):
             win_check_result = 'Win!'
             winner_name = player_name
             winner_rate = 10
-            player_rating[winner_name] += winner_rate
+            if winner_name in player_rating:
+                player_rating[winner_name] += winner_rate
+            else:
+                player_rating[winner_name] = winner_rate
             with open('rating.json', 'w') as rating_file:
                 rating_file.write(json.dumps(game_rating))
 
