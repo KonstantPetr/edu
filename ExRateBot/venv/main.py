@@ -54,7 +54,7 @@ def foxy(message):
 def convert_response(message):
 
     try:
-        user_req = message.text.split()
+        user_req = message.text.lower().split()
         check_request(user_req)
         base = user_req[0]
         quote = user_req[1]
