@@ -1,0 +1,80 @@
+0:
+python manage.py shell
+from news.models import *
+
+1:
+User.objects.create_user('Анастас')
+User.objects.create_user('Бенедикт')
+
+2:
+author_1 = Author.objects.create(user_id = 1)
+author_2 = Author.objects.create(user_id = 2)
+
+3:
+category_1 = Category.objects.create(name = 'Уфология')
+category_2 = Category.objects.create(name = 'Экология')
+category_3 = Category.objects.create(name = 'Криминал')
+category_4 = Category.objects.create(name = 'Спорт')
+
+4:
+article_1 = Post.objects.create(author_id = 2,
+                                section = article,
+                                header = 'Неопознанный летающий объект в небе над Батайском!',
+                                text = 'Внимание, граждане имперского города! Сегодня в полночь гражданином, пожелавшим остаться неизвестным, на окраине уездного города Батайска в небе над автозаправочной станцией "Шелл" был обнаружен и снят на камеру мобильного телефона неопознанный летающий объект! Компетентные органы уже работают на месте проишествия! Ссылка на данное видео: http://youtybe.net/fish/givememoney/lol')
+article_2 = Post.objects.create(author_id = 1,
+                                section = article,
+                                header = 'Что мы можем сделать для улучшения качества жизни?',
+                                text = 'Здравствуйте, дорогие читатели. Я дендролог 7-го разряда и всегда увлекался вопросами экологии. Сегодня я хочу начать цикл статей про то, как мы все можем сделать нашу жизнь немного лучше. Задумывались ли вы когда-нибудь, почему вам тяжело просыпаться по утрам? Откуда эта услаость и мешки под глазами? Повышенная утомляемость? Плохой аппетит? Эти и другие приметы современного городского жителя не в малой степени обусловлены загрязнённостью воздуха! Воздух это то, что постоянно проходит через наш организм и наши лёгкие фильтруют его от всех загрязнений. В результате тяжёлые металлы, вредные и радиоактивные вещества оказываются в организме, мы сами впускаем их, даже не подозревая об этом. Решение? Надо сажать больше деревьев! Давайте сегодня, каждый из вас, прочитавших эту статью, выйдет во двор своего дома и посадит одно дерево. Это маленький шаг, но представьте, если бы каждый из людей в мире делал так хотя бы раз, скажем, в год, насколько легче бы дышалось нашей планете, а вместе с ней и нам!')
+news_1 = Post.objects.create(author_id = 2,
+                                section = news,
+                                header = 'Безумец на поле!',
+                                text = 'Во время юбилейного хоккейного матча 12.01.2023 года на стадионе "Локомотив" в Хантымансийске произошло страшное преступление. Человек в костюме коровы выбежал на лёд и, достав пушку из кармана на "вымени" стал угрожать игрокам. Оперативные службы отреагировали оперативно и выехали к месту преступления. Однако, когда они добрались, дело резрешилось само собой. Безумец выстрелил и попал в шайбу, забив тем самым гол гостевой команде, а сам из-за отдачи упал на лёд и потерял сознание, ударившись головой. Правильно говорят "как корова на льду"! В данное время идёт разбирательство, заведено уголовное дело по статье УК РФ.')
+
+5:
+article_1.categories.add(1)
+article_2.categories.add(2)
+news_1.categories.add(3, 4)
+
+6:
+comment_1 = Comment.objects.create(post_id = 1,
+                                    user_id = 1,
+                                    text = 'Удивительно, но буквально за полчаса до этого видел похожий объект в Салехарде! Как же они быстро летают...')
+comment_2 = Comment.objects.create(post_id = 2,
+                                    user_id = 2,
+                                    text = 'Лол. Да что ты знаешь о деревьях?!')
+comment_3 = Comment.objects.create(post_id = 3,
+                                    user_id = 1,
+                                    text = 'Умора!')
+comment_4 = Comment.objects.create(post_id = 2,
+                                    user_id = 1,
+                                    text = 'Я ими дышу...')
+
+7:
+article_1.like()
+article_2.like()
+article_2.like()
+news_1.dislike()
+news_1.dislike()
+article_1.like()
+article_1.dislike()
+comment_1.like()
+comment_2.like()
+comment_3.like()
+comment_4.dislike()
+comment_4.like()
+comment_4.like()
+
+8:
+author_1.update_rating()
+author_2.update_rating()
+
+9:
+Author.objects.all().order_by('-rating').values('user__username', 'rating')[:1]
+
+10:
+query_0 = Post.objects.filter(section = 'AR').order_by('-rating').values('creation_dt', 'author_id__user__username', 'rating', 'header')[0]
+query_0['preview'] = Post.objects.filter(section = 'AR').order_by('-rating')[0].preview()
+print(query_0)
+
+11:
+Comment.objects.filter(post_id = Post.objects.filter(section = 'AR').order_by('-rating').values('id')[0]['id']).values('creation_dt', 'user_id__username', 'rating', 'text')
