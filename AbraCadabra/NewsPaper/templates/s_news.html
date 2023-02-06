@@ -1,0 +1,13 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+
+{% block title %}
+News
+{% endblock title %}
+
+{% block content %}
+<h1>{{ s_news.header|censor }}</h1>
+<h3>{{ s_news.creation_dt|date:'M d Y' }}</h3>
+<h5>{{ s_news.text|censor }}</h5>
+{% endblock content %}

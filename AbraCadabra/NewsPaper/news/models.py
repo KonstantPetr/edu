@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import Sum
 from django.contrib.auth.models import User
 from news.resources import *
+from django.urls import reverse
 
 
 class Author(models.Model):
@@ -45,6 +46,13 @@ class Post(models.Model, LikerMixIn):
 
     def __str__(self):
         return f'{self.header.title()}: {self.text[:50]}'
+
+    def get_absolute_url(self):
+        if self.section == 'NW':
+            result = reverse('news_detail', args=[str(self.id)])
+        elif self.section == 'AR':
+            result = reverse('article_detail', args=[str(self.id)])
+        return result
 
 
 class PostCategory(models.Model):
