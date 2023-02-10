@@ -1,0 +1,22 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}
+Твой любимый новостной портал
+{% endblock title %}
+
+{% block content %}
+<h2><a href="news/"> Новости </a></h2>
+<h2><a href="articles/"> Статьи </a></h2>
+
+{% if user.is_authenticated %}
+     <br>
+     Добро пожаловать, {{ user.username }} | <a href="accounts/logout/">Выход</a>
+     {% if is_not_author %}
+         <br><br>
+         <button> <a href="author_initiation/"> Желаю стать автором!</a> </button>
+     {% endif %}
+ {% else %}
+     <br>
+     <a href="accounts/signup/">Зарегистрироваться</a> | <a href="accounts/login/">Войти</a>
+ {% endif %}
+{% endblock content %}

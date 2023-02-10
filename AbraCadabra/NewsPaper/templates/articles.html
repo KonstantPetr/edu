@@ -58,4 +58,13 @@ Articles
        {% endif %}
    {% endif %}
 
+{% if user.is_authenticated %}
+     <br><br>
+     Добро пожаловать, {{ user.username }} | <a href="http://127.0.0.1:8000/accounts/logout/">Выход</a>
+ {% else %}
+     <br><br>
+     <a href="http://127.0.0.1:8000/accounts/signup/">Зарегистрироваться</a> |
+     <a href="http://127.0.0.1:8000/accounts/login/">Войти</a>
+{% endif %}
+
 {% endblock content %}
