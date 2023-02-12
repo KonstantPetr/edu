@@ -1,7 +1,7 @@
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.http import Http404
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -124,7 +124,9 @@ class ArticleUpdate(PermissionRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class NewsDelete(LoginRequiredMixin, DeleteView):
+class NewsDelete(PermissionRequiredMixin, DeleteView):
+    permission_required = ('news.delete_post',)
+
     model = Post
     template_name = 'news_delete.html'
     success_url = reverse_lazy('news_list')
@@ -136,7 +138,9 @@ class NewsDelete(LoginRequiredMixin, DeleteView):
         return super().form_valid(form)
 
 
-class ArticleDelete(LoginRequiredMixin, DeleteView):
+class ArticleDelete(PermissionRequiredMixin, DeleteView):
+    permission_required = ('news.delete_post',)
+
     model = Post
     template_name = 'articles_delete.html'
     success_url = reverse_lazy('articles_list')
