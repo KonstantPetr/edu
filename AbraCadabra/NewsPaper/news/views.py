@@ -5,8 +5,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.core.mail import send_mail, EmailMultiAlternatives
-from django.template.loader import render_to_string
 from .models import Post, Category
 from .filters import NewsFilter, ArticlesFilter
 from .forms import NewsForm, ArticlesForm
@@ -82,27 +80,6 @@ class NewsCreate(PermissionRequiredMixin, CreateView):
         post = form.save(commit=False)
         post.section = 'NW'
         return super().form_valid(form)
-
-    # def post(self, request, *args, **kwargs):
-    #
-    #     html_content = render_to_string(
-    #         'post_created.html',
-    #         {
-    #             'post': post,
-    #         }
-    #     )
-    #
-    #     msg = EmailMultiAlternatives(
-    #         subject=f'{post.categories_subscribers} {post.creation_dt.strftime("%Y-%M-%d")}',
-    #         body=appointment.message,  # это то же, что и message
-    #         from_email='peterbadson@yandex.ru',
-    #         to=['skavik46111@gmail.com'],  # это то же, что и recipients_list
-    #     )
-    #     msg.attach_alternative(html_content, "text/html")  # добавляем html
-    #
-    #     msg.send()
-
-
 
 
 class ArticleCreate(PermissionRequiredMixin, CreateView):
