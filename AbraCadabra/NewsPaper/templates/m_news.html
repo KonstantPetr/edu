@@ -21,17 +21,27 @@ News
        <table>
            <tr>
                <td>Автор</td>
+               <td>Категории</td>
                <td>Заголовок</td>
-               <td>Дата публикации</td>
                <td>Кратко</td>
+               <td>Дата публикации</td>
            </tr>
 
            {% for s_news in m_news %}
            <tr>
                <td>{{ s_news.author }}</td>
-               <td>{{ s_news.header|censor }}</td>
-               <td>{{ s_news.creation_dt|date:'M d Y' }}</td>
+               <td>
+                   {% for category in s_news.categories.all %}
+                        <a href="{% url 'category_list' category.id %}">{{ category }}</a>
+                   {% endfor %}
+               </td>
+               <td>
+                   <a href="{% url 'news_detail' s_news.id %}">{{ s_news.header|censor }}</a> <br>
+                   <a href="{% url 'news_update' s_news.id %}">Редактировать</a>
+                   <a href="{% url 'news_delete' s_news.id %}">Удалить</a>
+               </td>
                <td>{{ s_news.text|truncatewords:20|censor }}</td>
+               <td>{{ s_news.creation_dt|date:'M d Y' }}</td>
            </tr>
            {% endfor %}
 
@@ -59,6 +69,10 @@ News
    {% endif %}
 
 {% if user.is_authenticated %}
+     {% if is_author %}
+        <br><br>
+        <a href="create">Добавить новость</a>
+     {% endif %}
      <br><br>
      Добро пожаловать, {{ user.username }} | <a href="http://127.0.0.1:8000/accounts/logout/">Выход</a>
  {% else %}

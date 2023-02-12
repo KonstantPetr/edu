@@ -1,0 +1,7 @@
+{% extends 'flatpages/default.html' %}
+
+
+{% block content %}
+    <h4 class='text-center'>{{ message }}</h4>
+    <a href="{% url 'category_list' category.id %}">Вернуться к категории {{ category }}</a>
+{% endblock content %}

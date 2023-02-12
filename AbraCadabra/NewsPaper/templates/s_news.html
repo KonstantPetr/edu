@@ -10,4 +10,9 @@ News
 <h1>{{ s_news.header|censor }}</h1>
 <h3>{{ s_news.creation_dt|date:'M d Y' }}</h3>
 <h5>{{ s_news.text|censor }}</h5>
+
+<br><br>
+
+<h4><a href="http://127.0.0.1:8000/news/"> Обратно к списку новостей </a></h4>
+
 {% endblock content %}

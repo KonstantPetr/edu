@@ -1,0 +1,32 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+{% load custom_tags %}
+
+{% block title %}
+Categories
+{% endblock title %}
+
+{% block content %}
+   <h1>Категории</h1>
+   <h3>{{ categories_list|length }}</h3>
+
+   {% if categories_list %}
+        {% for category in categories_list %}
+            <a href="{% url 'category_list' category.id %}">{{ category }}</a> <br>
+        {% endfor %}
+
+   {% else %}
+       <h2>Категории отсутствуют!</h2>
+   {% endif %}
+
+{% if user.is_authenticated %}
+     <br><br>
+     Добро пожаловать, {{ user.username }} | <a href="http://127.0.0.1:8000/accounts/logout/">Выход</a>
+ {% else %}
+     <br><br>
+     <a href="http://127.0.0.1:8000/accounts/signup/">Зарегистрироваться</a> |
+     <a href="http://127.0.0.1:8000/accounts/login/">Войти</a>
+{% endif %}
+
+{% endblock content %}

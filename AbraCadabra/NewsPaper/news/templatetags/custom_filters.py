@@ -15,3 +15,14 @@ def censor(value):
                 value = value.replace(word[1:], "*" * (len(word) - 1))
 
     return value
+
+
+@register.filter()
+def nice_section(value):
+    if value == 'NW':
+        value = 'Новости'
+    else:
+        value = 'Статьи'
+
+    return value
+

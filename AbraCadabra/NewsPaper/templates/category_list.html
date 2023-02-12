@@ -4,49 +4,52 @@
 {% load custom_tags %}
 
 {% block title %}
-Articles
+Category
 {% endblock title %}
 
 {% block content %}
-   <h1>Статьи</h1>
-   <h3>{{ articles|length }}</h3>
-
-   <form action="" method="get">
-       {{ filterset.form.as_p }}
-       <input type="submit" value="Найти" />
-   </form>
+   <h1>{{ category }}</h1>
+   <h3>{{ category_list|length }}</h3>
 
    <hr>
-   {% if articles %}
+   {% if category_list %}
        <table>
            <tr>
+               <td>Раздел</td>
                <td>Автор</td>
-               <td>Категории</td>
+               <td>Категория</td>
                <td>Заголовок</td>
                <td>Кратко</td>
                <td>Дата публикации</td>
            </tr>
 
-           {% for article in articles %}
+           {% for post in category_list %}
            <tr>
-               <td>{{ article.author }}</td>
+               <td>{{ post.section|nice_section }}</td>
+               <td>{{ post.author }}</td>
                <td>
-                   {% for category in article.categories.all %}
+                   {% for category in post.categories.all %}
                         <a href="{% url 'category_list' category.id %}">{{ category }}</a>
                    {% endfor %}
                </td>
                <td>
-                   <a href="{% url 'article_detail' article.id %}">{{ article.header|censor }}</a> <br>
-                   <a href="{% url 'article_update' article.id %}">Редактировать</a>
-                   <a href="{% url 'article_delete' article.id %}">Удалить</a>
-               <td>{{ article.text|truncatewords:20|censor }}</td>
-               <td>{{ article.creation_dt|date:'M d Y' }}</td>
+                   {% if post.section == 'NW' %}
+                        <a href="{% url 'news_detail' post.id %}">{{ post.header|censor }}</a> <br>
+                        <a href="{% url 'news_update' post.id %}">Редактировать</a>
+                        <a href="{% url 'news_delete' post.id %}">Удалить</a>
+                   {% else %}
+                        <a href="{% url 'article_detail' post.id %}">{{ post.header|censor }}</a> <br>
+                        <a href="{% url 'article_update' post.id %}">Редактировать</a>
+                        <a href="{% url 'article_delete' post.id %}">Удалить</a>
+                   {% endif %}
+               <td>{{ post.text|truncatewords:20|censor }}</td>
+               <td>{{ post.creation_dt|date:'M d Y' }}</td>
            </tr>
            {% endfor %}
 
        </table>
    {% else %}
-       <h2>Статьи отсутствуют!</h2>
+       <h2>Публикации отсутствуют!</h2>
    {% endif %}
 
    {% if page_obj.has_previous %}
@@ -68,9 +71,12 @@ Articles
    {% endif %}
 
 {% if user.is_authenticated %}
-     {% if is_author %}
+     {% if is_not_subscriber %}
         <br><br>
-        <a href="create">Добавить статью</a>
+        <a href="{%url 'subscribe' category.id %}">Подписаться на категорию</a>
+     {% else %}
+        <br><br>
+        <a href="{%url 'unsubscribe' category.id %}">Отписаться от категории</a>
      {% endif %}
      <br><br>
      Добро пожаловать, {{ user.username }} | <a href="http://127.0.0.1:8000/accounts/logout/">Выход</a>

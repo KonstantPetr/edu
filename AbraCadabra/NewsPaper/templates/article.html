@@ -10,4 +10,9 @@ Article
 <h1>{{ article.header|censor }}</h1>
 <h3>{{ article.creation_dt|date:'M d Y' }}</h3>
 <h5>{{ article.text|censor }}</h5>
+
+<br><br>
+
+<h4><a href="http://127.0.0.1:8000/articles/"> Обратно к списку статей </a></h4>
+
 {% endblock content %}
