@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Post, Category
 from .filters import NewsFilter, ArticlesFilter
 from .forms import NewsForm, ArticlesForm
+from .tasks import send_email_task
 
 
 class IndexView(TemplateView):
@@ -79,6 +80,8 @@ class NewsCreate(PermissionRequiredMixin, CreateView):
     def form_valid(self, form):
         post = form.save(commit=False)
         post.section = 'NW'
+        post.save()
+        send_email_task.delay(post.pk)
         return super().form_valid(form)
 
 
@@ -92,6 +95,8 @@ class ArticleCreate(PermissionRequiredMixin, CreateView):
     def form_valid(self, form):
         post = form.save(commit=False)
         post.section = 'AR'
+        post.save()
+        send_email_task.delay(post.pk)
         return super().form_valid(form)
 
 
@@ -132,8 +137,8 @@ class NewsDelete(PermissionRequiredMixin, DeleteView):
     success_url = reverse_lazy('news_list')
 
     def form_valid(self, form):
-        post = form.save(commit=False)
-        if post.section == 'AR':
+        post = self.get_object().section
+        if post == 'AR':
             raise Http404
         return super().form_valid(form)
 
@@ -146,8 +151,8 @@ class ArticleDelete(PermissionRequiredMixin, DeleteView):
     success_url = reverse_lazy('articles_list')
 
     def form_valid(self, form):
-        post = form.save(commit=False)
-        if post.section == 'NW':
+        post = self.get_object().section
+        if post == 'NW':
             raise Http404
         return super().form_valid(form)
 
