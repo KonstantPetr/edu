@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification</title>
+</head>
+<body>
+    <h2>Здравствуйте! Новые объявления за последнюю неделю!</h2>
+    <ul>
+        {% for post in posts %}
+            <li>{{ post.header }}</li>
+        {% endfor %}
+    </ul>
+    <li><a href="{{ link }}/posts">перейти к объявлениям</a> </li>
+</body>
+</html>

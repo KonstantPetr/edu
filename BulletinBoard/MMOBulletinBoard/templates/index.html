@@ -1,0 +1,20 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}
+Твоя любимая доска объявлений
+{% endblock title %}
+
+{% block content %}
+<h2><a href="posts/"> Объявления </a></h2>
+{% if user.is_authenticated %}
+<h2><a href="responses/"> Отклики на ваши объявления </a></h2>
+{% endif %}
+
+{% if user.is_authenticated %}
+     <br>
+     Добро пожаловать, {{ user.username }} | <a href="accounts/logout/">Выход</a>
+ {% else %}
+     <br>
+     <a href="accounts/signup/">Зарегистрироваться</a> | <a href="accounts/login/">Войти</a>
+ {% endif %}
+{% endblock content %}

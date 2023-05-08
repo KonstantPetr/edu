@@ -1,0 +1,82 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+{% load custom_tags %}
+
+{% block title %}
+Responses
+{% endblock title %}
+
+{% block content %}
+   <h1>Отклики на ваши объявления</h1>
+
+   <form action="" method="get">
+       {{ filter.form }}
+       <input type="submit" value="Найти" />
+   </form>
+
+   <hr>
+   {% if responses %}
+       <table>
+           <tr>
+               <td>Объявление</td>
+               <td>Категория</td>
+               <td>Отклик</td>
+               <td>Дата публикации</td>
+               <td>Статус</td>
+           </tr>
+
+           {% for response in responses %}
+           <tr>
+               <td>{{ response.post.header }}</td>
+               <td>{{ response.post.category|nice_category }}</td>
+               <td>
+                   {{ response.text }} <br>
+                   {% if not response.applied %}
+                   <a href="{% url 'response_apply' response.id %}">Принять</a>
+                   <a href="{% url 'response_deny' response.id %}">Отклонить</a>
+                   {% endif %}
+               <td>{{ response.cre_dt|date:'M d Y' }}</td>
+               <td>{{ response.applied|nice_status }}</td>
+           </tr>
+           {% endfor %}
+
+       </table>
+   {% else %}
+       <h2>На ваши объявления никто не откликнулся!</h2>
+   {% endif %}
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {{message.tags}} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+   {% if page_obj.has_previous %}
+       <a href="?{% url_replace page=1 %}">1</a>
+       {% if page_obj.previous_page_number != 1 %}
+           ...
+           <a href="?{%url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+       {% endif %}
+   {% endif %}
+
+   {{ page_obj.number }}
+
+   {% if page_obj.has_next %}
+       <a href="?{%url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+       {% if paginator.num_pages != page_obj.next_page_number %}
+           ...
+           <a href="?{%url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+       {% endif %}
+   {% endif %}
+
+    {% if user.is_authenticated %}
+     <br><br>
+     Добро пожаловать, {{ user.username }} | <a href="http://127.0.0.1:8000/accounts/logout/">Выход</a>
+    {% endif %}
+
+{% endblock content %}
+

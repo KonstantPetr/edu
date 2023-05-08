@@ -1,0 +1,82 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+{% load custom_tags %}
+
+{% block title %}
+Posts
+{% endblock title %}
+
+{% block content %}
+   <h1>Объявления</h1>
+   <h3>{{ posts|length }}</h3>
+
+   <form action="" method="get">
+       {{ filterset.form.as_p }}
+       <input type="submit" value="Найти" />
+   </form>
+
+   <hr>
+   {% if posts %}
+       <table>
+           <tr>
+               <td>Игрок</td>
+               <td>Категория</td>
+               <td>Заголовок</td>
+               <td>Объявление</td>
+               <td>Дата публикации</td>
+           </tr>
+
+           {% for post in posts %}
+           <tr>
+               <td>{{ post.sender }}</td>
+               <td>{{ post.category|nice_category }}</td>
+               <td>
+                   {{ post.header }} <br>
+                   {% if user.id != post.sender.id %}
+                   <a href="{% url 'response_create' post.id %}">Откликнуться</a>
+                   {% endif %}
+                   {% if user.id == post.sender.id %}
+                   <a href="{% url 'post_update' post.id %}">Редактировать</a>
+                   <a href="{% url 'post_delete' post.id %}">Удалить</a>
+                   {% endif %}
+               <td>{{ post.content|safe }}</td>
+               <td>{{ post.cre_dt|date:'M d Y' }}</td>
+           </tr>
+           {% endfor %}
+
+       </table>
+   {% else %}
+       <h2>Объявления отсутствуют!</h2>
+   {% endif %}
+
+   {% if page_obj.has_previous %}
+       <a href="?{% url_replace page=1 %}">1</a>
+       {% if page_obj.previous_page_number != 1 %}
+           ...
+           <a href="?{%url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+       {% endif %}
+   {% endif %}
+
+   {{ page_obj.number }}
+
+   {% if page_obj.has_next %}
+       <a href="?{%url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+       {% if paginator.num_pages != page_obj.next_page_number %}
+           ...
+           <a href="?{%url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+       {% endif %}
+   {% endif %}
+
+{% if user.is_authenticated %}
+     <br><br>
+     <a href="create">Добавить объявление</a>
+     <br><br>
+     Добро пожаловать, {{ user.username }} | <a href="http://127.0.0.1:8000/accounts/logout/">Выход</a>
+ {% else %}
+     <br><br>
+     <a href="http://127.0.0.1:8000/accounts/signup/">Зарегистрироваться</a> |
+     <a href="http://127.0.0.1:8000/accounts/login/">Войти</a>
+{% endif %}
+
+{% endblock content %}
